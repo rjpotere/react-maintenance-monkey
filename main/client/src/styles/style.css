@@ -1,0 +1,9 @@
+header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.sign-in-form {
+    display: flex;
+    align-items: flex-start;
+}
