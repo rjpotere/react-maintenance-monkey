@@ -2,7 +2,7 @@ const { Schema, model } = require('mongoose');
 const bcrypt = require('bcrypt');
 
 const userSchema = new Schema({
-    usename: {
+    username: {
         type: String,
         require: true,
         unique: true,
@@ -20,7 +20,13 @@ const userSchema = new Schema({
         type: String,
         required: true,
         minLength: 8,
-    }
+    },
+    userGarage: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Garage',
+        },
+    ],
 });
 
 //pre save middleware to create new password
