@@ -4,7 +4,7 @@ function Header() {
     return (
         <header>
             <div>
-                <h1>Growth Tracker</h1>
+                <h1>Maintenance Monkey</h1>
             </div>
             <form className="sign-in-form">
                 <div className="mb-3">
