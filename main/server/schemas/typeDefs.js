@@ -21,7 +21,7 @@ type Services {
     _id: ID
     serviceType: String
     serviceMileage: String
-    serviceNote: String
+    serviceNotes: String
     createdAt: String
 }
 
@@ -42,7 +42,7 @@ type Mutation {
     createUser(username: String!, email: String!, password: String!): Auth
     login(email: String!, password: String!): Auth
     addVehicle(vinNumber: String!, vehicleYear: String!, vehicleMake: String!, vehicleModel: String!): Garage
-    addService(vehicleId: ID!, serviceType: String!, serviceMileage: String!, serviceNote: String): Garage
+    addService(vehicleId: ID!, serviceType: String!, serviceMileage: String!, serviceNotes: String): Garage
     removeVehicle(vehicleId: ID!): Garage
     removeService(vehicleId: ID!, serviceId: ID!): Garage
     deleteUser: User
