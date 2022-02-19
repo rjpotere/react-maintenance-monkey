@@ -43,6 +43,7 @@ type Mutation {
     login(email: String!, password: String!): Auth
     addVehicle(vinNumber: String!, vehicleYear: String!, vehicleMake: String!, vehicleModel: String!): Garage
     addService(vehicleId: ID!, serviceType: String!, serviceMileage: String!, serviceNotes: String): Garage
+    updateService(vehicleId: ID!, serviceId: ID!, serviceType: String!, serviceMileage: String!, serviceNotes: String): Garage
     removeVehicle(vehicleId: ID!): Garage
     removeService(vehicleId: ID!, serviceId: ID!): Garage
     deleteUser: User

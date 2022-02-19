@@ -84,6 +84,23 @@ const resolvers = {
       }
       throw new AuthenticationError('To add service, please log in.');
     },
+    updateService: async (parent, { vehicleId, serviceId, serviceType, serviceMileage, serviceNotes }, context) => {
+      if(context.user) {
+        return Garage.findOneAndUpdate(
+          { _id: vehicleId },
+          {
+            $addToSet: {
+              maintenance: { _id: serviceId, serviceType, serviceMileage, serviceNotes },
+            },
+          },
+          {
+            new: true,
+            runValidators: true,
+          }
+        );
+      }
+      throw new AuthenticationError('To update service, please log in.');
+    },
   },
 
 };
