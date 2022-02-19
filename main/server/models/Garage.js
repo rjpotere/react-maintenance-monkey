@@ -1,15 +1,17 @@
-const { Schema, model } = require("mongoose");
-const dateFormat = require("../utils/dateFormat");
+const { Schema, model } = require('mongoose');
 
 const garageSchema = new Schema({
-  year: {
+  vinNumber: {
     type: String,
-    required: true,
-    minlength: 4,
-    maxlength: 4,
+    required: 'Vehicle VIN Number is required',
     trim: true,
   },
-  make: {
+  vehicleYear: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  vehicleMake: {
     type: String,
     required: true,
     trim: true,
@@ -19,33 +21,38 @@ const garageSchema = new Schema({
     required: true,
     trim: true,
   },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-    get: (timestamp) => dateFormat(timestamp),
-  },
   maintenance: [
     {
-      service: {
+      serviceType: {
         type: String,
+        required: true,
       },
       serviceMileage: {
-          type: String,
+        type: String,
+        required: true,
       },
-      serviceNote: {
-          type: String,
-          required: false,
-          maxlength: 240,
-      },
-      serviceDate: {
-          type: Date,
-          default: Date.now,
-          get: (timestamp) => dateFormat(timestamp),
+      serviceNotes: {
+        type: String,
+        required: false,
       },
     },
   ],
 });
 
-const Garage = ('Garage', garageSchema);
+const Garage = model('Garage', garageSchema);
 
-model.exports = Garage;
+module.exports = Garage;
+
+
+
+//vehicleYear
+//vehicleMake
+//vehicleModel
+
+
+//maintenance: [
+//serviceType
+//serviceMileage
+//serviceNote
+//]
+

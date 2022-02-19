@@ -4,23 +4,25 @@ const typeDefs = gql `
 type User {
     _id: ID
     email: String
-    userGarage: [Garage]!
+    username: String
+    vehicles: [Garage]!
 }
 
 type Garage {
     _id: ID
-    year: String
-    make: String
+    vinNumber: String
+    vehicleYear: String
+    vehicleMake: String
     vehicleModel: String
-    maintenance: [Maintenance]
+    maintenance: [Services]!
 }
 
-type Maintenance {
+type Services {
     _id: ID
-    service: String
+    serviceType: String
     serviceMileage: String
     serviceNote: String
-    serviceDate: String
+    createdAt: String
 }
 
 type Auth {
@@ -30,19 +32,19 @@ type Auth {
 
 type Query {
     users: [User]
-    user(username: String!): User
-    userGarage(username: String): [Garage]
+    user(username: String): User
+    vehicles(username: String): [Garage]
     service(garageId: ID!): Garage
     me: User
 }
 
 type Mutation {
-    addUser(username: String!, email: String!, password: String!): Auth
+    createUser(username: String!, email: String!, password: String!): Auth
     login(email: String!, password: String!): Auth
-    addToGarage(year: String!, make: String!, vehicleModel: String!): Garage
-    addService(garageId: ID!, service: String!, serviceMileage: String, serviceNote: String): Garage
-    deleteGarage(garageId: ID!): Garage
-    deleteService(garageId: ID!, serviceId: ID!): Garage
+    addVehicle(vinNumber: String!, vehicleYear: String!, vehicleMake: String!, vehicleModel: String!): Garage
+    addService(vehicleId: ID!, serviceType: String!, serviceMileage: String!, serviceNote: String): Garage
+    removeVehicle(vehicleId: ID!): Garage
+    removeService(vehicleId: ID!, serviceId: ID!): Garage
     deleteUser: User
 }
 

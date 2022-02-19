@@ -1,105 +1,91 @@
-const { AuthenticationError } = require("apollo-server-express");
-const { User, Garage } = require("../models");
-const { signToken } = require("../utils/auth");
+const { AuthenticationError } = require('apollo-server-express');
+const { User, Garage } = require('../models');
+const { signToken } = require('../utils/auth');
 
 const resolvers = {
   Query: {
     users: async () => {
-      return User.find().populate("userGarage");
+      return User.find().populate('vehicles');
     },
     user: async (parent, { username }) => {
-      return User.findOne({ username }).populate("userGarage");
+      return User.findOne({ username }).populate('vehicles');
     },
-    userGarage: async (parent, { username }) => {
+    vehicles: async (parent, { username }) => {
       const params = username ? { username } : {};
-      return Garage.find(params).sort({ createdAt: -1 });
+      return Garage.find(params);
     },
-    service: async (parent, { garageId }) => {
-      return Garage.findOne({ _id: garageId });
+    service: async (parent, { serviceId }) => {
+      return Garage.findOne({ _id: serviceId });
     },
     me: async (parent, args, context) => {
       if (context.user) {
-        return User.findOne({ _id: context.user._id }).populate("userGarage");
+        return User.findOne({ _id: context.user._id }).populate('vehicles');
       }
-      throw new AuthenticationError("You are not logged in.");
+      throw new AuthenticationError('You must be logged in.');
     },
   },
 
   Mutation: {
+    createUser: async (parent, { username, email, password }) => {
+      const user = await User.create({ username, email, password });
+      const token = signToken(user);
+      return { token, user };
+    },
     login: async (parent, { email, password }) => {
       const user = await User.findOne({ email });
 
       if (!user) {
-        throw new AuthenticationError(
-          "A profile with this email does not exist"
-        );
+        throw new AuthenticationError('Please check your email');
       }
 
-      const matchingPassword = await user.isCorrectPassword(password);
+      const correctPw = await user.isCorrectPassword(password);
 
-      if (!matchingPassword) {
-        throw new AuthenticationError("Please check password");
+      if (!correctPw) {
+        throw new AuthenticationError('Please check your password');
       }
 
       const token = signToken(user);
-      return { token, user };
-    },
-
-    addUser: async (parent, { username, email, password }) => {
-      const user = await User.create({ username, email, password });
-      const token = signToken(user);
 
       return { token, user };
-    },
 
-    addToGarage: async (parent, { year, make, vehicleModel }, context) => {
+    },
+    addVehicle: async (parent, { vinNumber, vehicleYear, vehicleMake, vehicleModel }, context) => {
       if (context.user) {
-        const newgarage = await Garage.create({
-          year,
-          make,
+        const garage = await Garage.create({
+          vinNumber,
+          vehicleYear,
+          vehicleMake,
           vehicleModel,
         });
 
         await User.findOneAndUpdate(
-          { _id: context.user.id },
-          { $addToSet: { userGarage: newgarage._id } }
+          { _id: context.user._id },
+          { $addToSet: { vehicles: garage._id } }
         );
 
-        return newgarage;
+        return garage;
       }
-      throw new AuthenticationError("You are not logged in.");
+      throw new AuthenticationError('You need to be logged in!');
     },
-
-    addService: async (
-      parent,
-      { garageId, service, serviceMileage, serviceNote },
-      context
-    ) => {
-      if (context.user) {
+    addService: async (parent, { vehicleId, serviceType, serviceMileage, serviceNotes }, context) => {
+      if(context.user) {
         return Garage.findOneAndUpdate(
-          { _id: garageId },
+          { _id: vehicleId },
           {
             $addToSet: {
-              maintenance: { service, serviceMileage, serviceNote },
+              maintenance: { serviceType, serviceMileage, serviceNotes },
             },
           },
           {
-              new: true,
-              runValidators: true,
+            new: true,
+            runValidators: true,
           }
         );
       }
-      throw new AuthenticationError('You are not logged in.')
-    },
-
-    deleteUser: async (parent, args, context) => {
-      if (context.user) {
-        return User.findOneAndDelete({ _id: context.user._id });
-      }
-
-      throw new AuthenticationError("Cannot delete this user");
+      throw new AuthenticationError('To add service, please log in.');
     },
   },
+
 };
 
 module.exports = resolvers;

@@ -9,7 +9,6 @@ import {
 } from '@apollo/client';
 
 import { setContext } from '@apollo/client/link/context';
-import Header from './components/Header';
 import HomePage from './pages/HomePage';
 import 'bootstrap/'
 
@@ -38,7 +37,6 @@ function App() {
     <ApolloProvider client={client}>
       <Router basename='react-website'>
         <div>
-          <Header />
           <div>
             <Route exact path="/">
               <HomePage />

@@ -14,5 +14,8 @@
   "license": "MIT",
   "devDependencies": {
     "concurrently": "^6.2.1"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.0"
   }
 }
