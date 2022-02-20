@@ -101,6 +101,38 @@ const resolvers = {
       }
       throw new AuthenticationError('To update service, please log in.');
     },
+    removeVehicle: async (parent, { vehicleId }, context) => {
+      if (context.user) {
+        const vehicle = await Garage.findOneAndDelete({
+          _id: vehicleId
+        });
+
+        await User.findOneAndUpdate(
+          { _id: vehicleId },
+          { $pull: { vehicles: vehicle._id } }
+        );
+      }
+      throw new AuthenticationError('To remove a vehicle, please log in.');
+    },
+    removeService: async (parent, { vehicleId, serviceId }, context) => {
+      if (context.user) {
+        return Garage.findOneAndUpdate(
+          { _id: vehicleId },
+          {
+            $pull: {
+              maintenance: {
+                _id: serviceId,
+              },
+            },
+          },
+          { new: true }
+        );
+      }
+      throw new AuthenticationError('To remove a service performed, please log in.');
+    },
+    deleteUser: async (parent, { userId }, context) => {
+      return User.findOneAndDelete({ _id: userId });
+    },
   },
 
 };

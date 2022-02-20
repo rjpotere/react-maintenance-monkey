@@ -46,7 +46,7 @@ type Mutation {
     updateService(vehicleId: ID!, serviceId: ID!, serviceType: String!, serviceMileage: String!, serviceNotes: String): Garage
     removeVehicle(vehicleId: ID!): Garage
     removeService(vehicleId: ID!, serviceId: ID!): Garage
-    deleteUser: User
+    deleteUser(userId:ID!): User
 }
 
 `;
